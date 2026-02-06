@@ -37,4 +37,23 @@ public class AuthService {
         message.setText("Seu código é: " + token);
         mailSender.send(message);
     }
+
+    public String verifyToken(String cnpj, String token) {
+        CustomersModel customer = repository.findByCnpj(cnpj)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        if (customer.getToken() == null || !customer.getToken().equals(token)) {
+            throw new RuntimeException("Token inválido");
+        }
+
+        if (customer.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token expirado");
+        }
+
+        customer.setToken(null);
+        customer.setTokenExpiration(null);
+        repository.save(customer);
+
+        return "Login realizado com sucesso!";
+    }
 }
