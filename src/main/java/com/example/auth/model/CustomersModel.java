@@ -18,7 +18,9 @@ public class CustomersModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
     private String token;
     private LocalDateTime tokenExpiration;
