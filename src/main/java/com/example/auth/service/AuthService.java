@@ -17,6 +17,8 @@ public class AuthService {
     private CustomersRepository repository;
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private EmailService emailService;
 
     public void generateToken(String cnpj) {
         CustomersModel customers = repository.findByCnpj(cnpj)
@@ -27,7 +29,13 @@ public class AuthService {
         customers.setTokenExpiration(LocalDateTime.now().plusMinutes(10));
         repository.save(customers);
 
-        sendEmail(customers.getEmail(), token);
+        try {
+            emailService.enviarTokenPolvo(customers.getEmail(), token);
+        } catch (Exception e) {
+            System.err.println("ERRO REAL AO ENVIAR E-MAIL: " + e.getMessage());
+            e.printStackTrace(); // Isso vai cuspir o erro detalhado no seu console
+            throw new RuntimeException("Falha no e-mail: " + e.getMessage());
+        }
     }
 
     private void sendEmail(String to, String token) {
