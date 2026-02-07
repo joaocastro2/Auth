@@ -17,63 +17,69 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        helper.setFrom("noreply@alsecurity.com");
+        helper.setFrom("noreply@alsecurança.com.br");
         helper.setTo(para);
-        helper.setSubject("Seu Código de Segurança 🐙");
+        helper.setSubject(" Token AL Segurança");
 
         String htmlBody = """
-            <div style="background-color: #f0f4f8; padding: 50px 20px; font-family: 'Segoe UI', Tahoma, sans-serif;">
-                <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <div style="background-color: #F1F5F9; padding: 40px 10px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <div style="max-width: 480px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);">
                     
-                    <div style="background-color: #10b981; padding: 20px; text-align: center;">
-                        <span style="color: #ffffff; font-weight: 800; letter-spacing: 3px; font-size: 14px; text-transform: uppercase;">AL Security System</span>
+                    <div style="background-color: #0F172A; padding: 30px; text-align: center;">
+                        <div style="display: inline-block; padding: 8px 15px; border: 1px solid #334155; border-radius: 12px;">
+                            <span style="color: #FFFFFF; font-weight: 900; letter-spacing: 2px; font-size: 16px; text-transform: uppercase;">
+                                AL <span style="color: #10B981; font-weight: 400;">SEGURANÇA</span>
+                            </span>
+                        </div>
                     </div>
 
-                    <div style="padding: 40px; text-align: center;">
+                    <div style="padding: 40px 30px; text-align: center;">
                         
-                        <div style="width: 160px; height: 160px; margin: 0 auto; position: relative;">
-                            
-                            <div style="position: absolute; width: 80px; height: 15px; background: rgba(0,0,0,0.1); border-radius: 50%%; bottom: 5px; left: 40px;"></div>
-
-                            <div style="width: 110px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 55px 55px 45px 45px; margin: 0 auto; position: relative; z-index: 2; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.1);">
-                                
-                                <div style="position: absolute; width: 28px; height: 28px; background: white; border-radius: 50%%; top: 38px; left: 18px; display: flex; align-items: center; justify-content: center;">
-                                    <div style="width: 10px; height: 10px; background: #1f2937; border-radius: 50%%;"></div>
-                                </div>
-                                <div style="position: absolute; width: 28px; height: 28px; background: white; border-radius: 50%%; top: 38px; right: 18px; display: flex; align-items: center; justify-content: center;">
-                                    <div style="width: 10px; height: 10px; background: #1f2937; border-radius: 50%%;"></div>
-                                </div>
-
-                                <div style="position: absolute; width: 24px; height: 12px; border-bottom: 3px solid #064e3b; border-radius: 0 0 12px 12px; bottom: 18px; left: 43px;"></div>
-                            </div>
-
-                            <div style="width: 130px; margin: -25px auto 0 auto; position: relative; z-index: 1;">
-                                <div style="display: inline-block; width: 20px; height: 45px; background: #059669; border-radius: 15px; transform: rotate(15deg); margin-right: -5px;"></div>
-                                <div style="display: inline-block; width: 20px; height: 55px; background: #10b981; border-radius: 15px; margin-top: 10px;"></div>
-                                <div style="display: inline-block; width: 20px; height: 55px; background: #10b981; border-radius: 15px; margin-top: 10px;"></div>
-                                <div style="display: inline-block; width: 20px; height: 45px; background: #059669; border-radius: 15px; transform: rotate(-15deg); margin-left: -5px;"></div>
-                            </div>
+                        <div style="margin-bottom: 30px;">
+                            <svg width="100" height="100" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+                                <path d="M50,100 C50,40 150,40 150,100 C150,135 130,155 100,155 C70,155 50,135 50,100" fill="none" stroke="#10B981" stroke-width="4" />
+                                <circle cx="80" cy="95" r="5" fill="#10B981" />
+                                <circle cx="120" cy="95" r="5" fill="#10B981" />
+                                <path d="M70,150 L60,180 M90,155 L90,190 M110,155 L110,190 M130,150 L140,180" stroke="#10B981" stroke-width="4" stroke-linecap="round" />
+                            </svg>
                         </div>
 
-                        <h2 style="color: #1f2937; font-size: 22px; margin-top: 20px; margin-bottom: 10px;">Verificação de Acesso</h2>
-                        <p style="color: #64748b; font-size: 15px; line-height: 1.5;">Detectamos uma tentativa de login com o seu CNPJ. Utilize o código de segurança abaixo para prosseguir:</p>
+                        <h2 style="color: #0F172A; font-size: 24px; font-weight: 800; margin: 0; tracking: -0.5px;">Autenticação de Acesso</h2>
+                        <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-top: 12px;">
+                            Olá, recebemos uma solicitação de entrada no painel <strong>AL Segurança</strong> para o seu CNPJ institucional.
+                        </p>
 
-                        <div style="margin: 35px 0; padding: 25px; background-color: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px;">
-                            <span style="display: block; font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Código Único</span>
-                            <span style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px;">
+                        <div style="margin: 40px 0; padding: 30px; background-color: #F8FAFC; border-radius: 24px; border: 2px dashed #E2E8F0;">
+                            <span style="display: block; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; font-weight: 700;">Seu Código Token</span>
+                            <span style="font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 12px; font-family: monospace;">
                                 %s
                             </span>
                         </div>
 
-                        <div style="background-color: #fff9eb; border-left: 4px solid #f59e0b; padding: 15px; text-align: left; margin-bottom: 20px;">
-                            <p style="color: #92400e; font-size: 13px; margin: 0;"><strong>Atenção:</strong> Este código expira em 10 minutos e só pode ser usado uma única vez.</p>
+                        <div style="background-color: #F1F5F9; border-radius: 16px; padding: 15px; text-align: left; margin-bottom: 30px;">
+                            <table role="presentation" width="100%%">
+                                <tr>
+                                    <td style="vertical-align: top; width: 30px;">
+                                        <span style="font-size: 18px;">🛡️</span>
+                                    </td>
+                                    <td>
+                                        <p style="color: #475569; font-size: 12px; margin: 0; line-height: 1.4;">
+                                            <strong>Dica de Segurança:</strong> Nunca compartilhe este código. Nossa equipe nunca solicitará seu token por telefone ou redes sociais.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
 
-                        <p style="color: #94a3b8; font-size: 12px;">Se você não solicitou este acesso, por favor ignore este e-mail ou entre em contato com o suporte.</p>
+                        <p style="color: #94A3B8; font-size: 11px; line-height: 1.5;">
+                            Se você não reconhece esta atividade, sua conta pode estar sendo testada. Nenhuma ação adicional é necessária, pois o acesso requer este código físico.
+                        </p>
                     </div>
 
-                    <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
-                        <p style="color: #94a3b8; font-size: 11px; margin: 0;">&copy; 2026 AL Security - Proteção de Dados e Monitoramento</p>
+                    <div style="background-color: #F8FAFC; padding: 25px; text-align: center; border-top: 1px solid #F1F5F9;">
+                        <p style="color: #94A3B8; font-size: 10px; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
+                            &copy; 2026 AL SEGURANÇA &bull; MONITORAMENTO INTELIGENTE
+                        </p>
                     </div>
                 </div>
             </div>
