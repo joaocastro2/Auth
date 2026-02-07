@@ -1,17 +1,17 @@
 import axios from 'axios';
 
-// Java backend URL
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 export const AuthService = {
   async sendToken(cnpj: string) {
-    // cnpj
-    return api.post('/auth/request-token', { cnpj });
+    const response = await api.post('/auth/request-token', { cnpj });
+    return response.status === 200 || response.status === 201;
   },
 
   async verifyToken(cnpj: string, token: string) {
-    return api.post('/auth/login', { cnpj, token });
+    const response = await api.post('/auth/login', { cnpj, token });
+    return response.status === 200;
   }
 };
