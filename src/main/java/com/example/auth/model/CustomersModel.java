@@ -23,5 +23,6 @@ public class CustomersModel {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
     private String token;
+    @Column(name = "token_expiration")
     private LocalDateTime tokenExpiration;
 }
