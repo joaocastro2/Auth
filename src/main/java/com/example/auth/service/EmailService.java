@@ -23,7 +23,7 @@ public class EmailService {
 
         helper.setFrom(remetentMail);
         helper.setTo(para);
-        helper.setSubject(" Para meu amorzinho");
+        helper.setSubject("MEU TOKEN AL SEGURANÇA");
 
         String htmlBody = """
             <div style="background-color: #F1F5F9; padding: 40px 10px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
