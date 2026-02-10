@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * This class configures all the operation and priority of the flyway.
+ */
 @Configuration
 public class FlywayMigrationConfig {
 
