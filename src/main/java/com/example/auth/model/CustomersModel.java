@@ -21,12 +21,12 @@ public class CustomersModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "cnpj", nullable = false, unique = true)
+    @Column(name = "cnpj", nullable = false, unique = true, updatable = false)
     private String cnpj;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    @Column(name = "token", nullable = false, unique = true)
+    @Column(name = "token")
     private String token; //token used for login validation
-    @Column(name = "token_expiration", nullable = false)
+    @Column(name = "token_expiration")
     private LocalDateTime tokenExpiration;
 }

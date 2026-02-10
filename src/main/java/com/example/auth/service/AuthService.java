@@ -4,6 +4,7 @@ import com.example.auth.exception.AuthException;
 import com.example.auth.exception.UserNotFoundException;
 import com.example.auth.model.CustomersModel;
 import com.example.auth.repository.CustomersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class AuthService {
      * It processes the token sent by the user, checks if it matches the one sent,
      * if it hasn't expired, and performs the login. It uses "One-time use"; after successful login, the token is deleted.
      */
+    @Transactional
     public String verifyToken(String cnpj, String token) {
 
         CustomersModel customer = repository.findByCnpj(cnpj)
