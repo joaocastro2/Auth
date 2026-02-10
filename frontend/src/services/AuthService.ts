@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-// Interfaces centralizadas
+// Centralized interfaces
 export interface AuthResponse {
   message?: string;
   token?: string;
@@ -8,7 +8,7 @@ export interface AuthResponse {
 
 export interface AuthError {
   message: string;
-  error?: string; // Algumas exceções do Spring usam a chave 'error' por padrão
+  error?: string; // Some Spring exceptions use the 'error' key by default.
 }
 
 const api = axios.create({
@@ -19,7 +19,7 @@ const api = axios.create({
 });
 
 /**
- * Função utilitária para limpar caracteres não numéricos do CNPJ
+ * Utility function to remove non-numeric characters from the CNPJ (Brazilian company tax ID).
  */
 const cleanCNPJ = (cnpj: string) => cnpj.replace(/\D/g, '');
 
@@ -28,7 +28,7 @@ export const AuthService = {
     try {
       await api.post('/auth/request-token', { cnpj: cleanCNPJ(cnpj) });
     } catch (error) {
-      // Usamos uma função estática ou arrow function para evitar problemas de 'this'
+      // We use a static function or arrow function to avoid 'this' problems.
       handleRequestError(error as AxiosError<AuthError>);
     }
   },
@@ -47,12 +47,12 @@ export const AuthService = {
 };
 
 /**
- * Tratamento de erros isolado para manter o objeto AuthService limpo.
- * Tenta buscar 'message' ou 'error' do corpo da resposta do Spring Boot.
+ * Isolated error handling to keep the AuthService object clean.
+ * Try searching for 'message' or 'error' in the Spring Boot response body.
  */
 function handleRequestError(error: AxiosError<AuthError>): never {
   if (error.response) {
-    // Tenta capturar a mensagem vinda do GlobalExceptionHandler do Java
+    // Attempts to capture the message coming from the Java GlobalExceptionHandler.
     const message = error.response.data?.message || error.response.data?.error;
     throw new Error(message || `Erro ${error.response.status}: Falha na operação`);
   } 

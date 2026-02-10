@@ -10,7 +10,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Formata CNPJ para exibição: 00.000.000/0000-00
+  // Format CNPJ for display: 00.000.000/0000-00
   const formatCNPJ = (val: string) => {
     return val
       .replace(/\D/g, '')
@@ -45,7 +45,7 @@ export default function App() {
 
     try {
       if (step === 'cnpj') {
-        // Envia apenas números para o serviço
+        // Send only numbers to the service.
         await AuthService.sendToken(cnpj.replace(/\D/g, ''));
         setStep('token');
       } else {
@@ -54,13 +54,13 @@ export default function App() {
       }
     } catch (err: any) {
       setError(err.message || "Ocorreu um erro inesperado.");
-      if (step === 'token') setToken(['', '', '', '', '', '']); // Limpa token em caso de erro
+      if (step === 'token') setToken(['', '', '', '', '', '']); // Clear token in case of error.
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-submit quando o token estiver completo
+  // Auto-submit when the token is complete.
   useEffect(() => {
     if (token.join('').length === 6 && step === 'token' && !loading) {
       handleNext();

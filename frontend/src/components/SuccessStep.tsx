@@ -4,6 +4,11 @@ interface SuccessStepProps {
   onReset: () => void;
 }
 
+/**
+ * Post-authentication success visualization component.
+ * Displays a visual animation (mascot) and a confirmation message.
+ * indicating that the token was successfully validated by the backend.
+ */
 const SuccessStep = ({ onReset }: SuccessStepProps) => (
   <div className="text-center py-4 space-y-6 animate-in zoom-in-95 duration-500">
     <div className="w-40 h-40 mx-auto relative group">
