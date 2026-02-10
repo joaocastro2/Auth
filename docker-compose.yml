@@ -5,6 +5,8 @@ services:
     image: postgres:15
     container_name: auth-db
     restart: always
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -20,8 +22,10 @@ services:
     restart: always
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${DB_NAME}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${DB_PORT}/${DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_MAIL_HOST=smtp.gmail.com
@@ -37,7 +41,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://localhost:8080
+        - VITE_API_URL=${API_URL}
     container_name: al-web
     restart: always
     depends_on:

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Building2, ArrowRight, Loader2, AlertCircle, LogOut, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { AuthService } from './services/AuthService';
 
@@ -10,12 +10,25 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  // Formata CNPJ para exibição: 00.000.000/0000-00
+  const formatCNPJ = (val: string) => {
+    return val
+      .replace(/\D/g, '')
+      .replace(/^(\dt{2})(\dt{3})(\dt{3})(\dt{4})(\dt{2}).*/, "$1.$2.$3/$4-$5")
+      .substring(0, 18);
+  };
+
   const handleTokenChange = (value: string, index: number) => {
-    if (isNaN(Number(value))) return;
+    const char = value.replace(/\D/g, '').substring(value.length - 1);
+    if (!char && value !== '') return;
+
     const newToken = [...token];
-    newToken[index] = value.substring(value.length - 1);
+    newToken[index] = char;
     setToken(newToken);
-    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+
+    if (char && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
     if (error) setError(null);
   };
 
@@ -29,25 +42,35 @@ export default function App() {
     if (loading) return;
     setLoading(true);
     setError(null);
+
     try {
       if (step === 'cnpj') {
-        const exists = await AuthService.sendToken(cnpj);
-        exists ? setStep('token') : setError("CNPJ não autorizado.");
+        // Envia apenas números para o serviço
+        await AuthService.sendToken(cnpj.replace(/\D/g, ''));
+        setStep('token');
       } else {
-        const isValid = await AuthService.verifyToken(cnpj, token.join(''));
-        isValid ? setStep('success') : setError("Token inválido.");
+        await AuthService.verifyToken(cnpj.replace(/\D/g, ''), token.join(''));
+        setStep('success');
       }
-    } catch (err) {
-      setError("Falha na conexão.");
+    } catch (err: any) {
+      setError(err.message || "Ocorreu um erro inesperado.");
+      if (step === 'token') setToken(['', '', '', '', '', '']); // Limpa token em caso de erro
     } finally {
       setLoading(false);
     }
   };
 
+  // Auto-submit quando o token estiver completo
+  useEffect(() => {
+    if (token.join('').length === 6 && step === 'token' && !loading) {
+      handleNext();
+    }
+  }, [token]);
+
   const getThemeColor = () => {
-    if (error) return '#ef4444'; // Red
-    if (step === 'success') return '#10b981'; // Esmerald
-    return '#3b82f6'; // Blue
+    if (error) return '#ef4444';
+    if (step === 'success') return '#10b981';
+    return '#3b82f6';
   };
 
   return (
@@ -67,14 +90,20 @@ export default function App() {
           {step !== 'success' ? (
             <div className="space-y-6 animate-in fade-in duration-500">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Identificação</h2>
-                <p className="text-slate-400 text-xs mt-1">Para acessar o portal, digite um cnpj válido.</p>
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                  {step === 'cnpj' ? 'Identificação' : 'Verificação'}
+                </h2>
+                <p className="text-slate-400 text-xs mt-1">
+                  {step === 'cnpj' 
+                    ? 'Para acessar o portal, digite um CNPJ autorizado.' 
+                    : `Enviamos um código para o e-mail vinculado ao CNPJ.`}
+                </p>
               </div>
 
               {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-xl flex items-center gap-3">
-                  <AlertCircle className="text-red-500" size={16} />
-                  <p className="text-red-800 text-[10px] font-black uppercase tracking-widest">{error}</p>
+                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-xl flex items-center gap-3 animate-in slide-in-from-top-1">
+                  <AlertCircle className="text-red-500 flex-shrink-0" size={16} />
+                  <p className="text-red-800 text-[10px] font-black uppercase tracking-widest leading-tight">{error}</p>
                 </div>
               )}
 
@@ -84,8 +113,10 @@ export default function App() {
                   <div className="relative">
                     <Building2 className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${error ? 'text-red-400' : 'text-slate-300'}`} size={18} />
                     <input
-                      type="text" disabled={step === 'token' || loading} value={cnpj}
-                      onChange={(e) => { setCnpj(e.target.value.replace(/\D/g, '').substring(0, 14)); if(error) setError(null); }}
+                      type="text" 
+                      disabled={step === 'token' || loading} 
+                      value={cnpj}
+                      onChange={(e) => { setCnpj(formatCNPJ(e.target.value)); if(error) setError(null); }}
                       placeholder="00.000.000/0000-00"
                       className={`w-full pl-11 pr-4 py-3.5 rounded-xl border-2 outline-none transition-all font-bold text-base
                         ${error ? 'bg-red-50 border-red-100 text-red-900' : 'bg-slate-50 border-slate-50 focus:bg-white focus:border-slate-900 text-slate-700'}`}
@@ -97,13 +128,22 @@ export default function App() {
                   <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="flex justify-between px-1">
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-900">Código Token</label>
-                      <button onClick={() => setStep('cnpj')} className="text-[9px] font-bold text-slate-400 hover:text-red-500 uppercase">Voltar</button>
+                      <button 
+                        onClick={() => { setStep('cnpj'); setToken(['','','','','','']); }} 
+                        className="text-[9px] font-bold text-slate-400 hover:text-red-500 uppercase transition-colors"
+                      >
+                        Alterar CNPJ
+                      </button>
                     </div>
                     <div className="grid grid-cols-6 gap-2">
                       {token.map((digit, i) => (
                         <input
-                          key={i} ref={(el) => { inputRefs.current[i] = el; }}
-                          type="text" maxLength={1} value={digit}
+                          key={i} 
+                          ref={(el) => { inputRefs.current[i] = el; }}
+                          type="text" 
+                          maxLength={1} 
+                          value={digit}
+                          autoFocus={i === 0}
                           onChange={(e) => handleTokenChange(e.target.value, i)}
                           onKeyDown={(e) => handleKeyDown(e, i)}
                           className={`w-full h-12 text-center text-xl font-black rounded-xl border-2 transition-all outline-none
@@ -117,8 +157,8 @@ export default function App() {
 
               <button
                 onClick={handleNext}
-                disabled={loading || (step === 'cnpj' ? cnpj.length < 14 : token.join('').length < 6)}
-                className={`w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg active:scale-[0.98] disabled:opacity-20
+                disabled={loading || (step === 'cnpj' ? cnpj.replace(/\D/g, '').length < 14 : token.join('').length < 6)}
+                className={`w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg active:scale-[0.98] disabled:opacity-30
                   ${error ? 'bg-red-600 text-white' : 'bg-slate-900 hover:bg-black text-white'}`}
               >
                 {loading ? <Loader2 className="animate-spin mx-auto" size={18} /> : (
@@ -143,14 +183,11 @@ export default function App() {
           )}
         </section>
 
-        {/* Octopus Dinamic Right Side */}
         <section className={`flex-1 flex flex-col items-center justify-center p-12 transition-all duration-700 relative 
           ${error ? 'bg-red-950' : step === 'success' ? 'bg-emerald-600' : 'bg-slate-900'}`}>
           
           <div className="relative w-full max-w-[200px] text-center">
             <svg viewBox="0 0 200 200" className={`w-full h-auto drop-shadow-2xl transition-transform duration-500 ${error ? 'scale-110' : 'animate-float'}`}>
-              
-              {/* Body */}
               <path 
                 d="M45,100 C45,40 155,40 155,100 C155,135 130,155 100,155 C70,155 45,135 45,100" 
                 fill="none"
@@ -158,8 +195,6 @@ export default function App() {
                 strokeWidth={error ? "4" : "2"}
                 className="transition-all duration-500" 
               />
-              
-              {/* Tentácles */}
               {[
                 error ? "M60,145 L30,180" : "M60,145 Q40,170 50,185", 
                 error ? "M80,153 L70,195" : "M80,153 Q80,185 90,190", 
@@ -176,7 +211,6 @@ export default function App() {
                 />
               ))}
 
-              {/* eyes */}
               {error ? (
                 <g className="animate-pulse">
                   <path d="M65,90 L90,105" stroke="#ef4444" strokeWidth="6" strokeLinecap="round" />

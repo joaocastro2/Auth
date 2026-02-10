@@ -1,5 +1,7 @@
 package com.example.auth.service;
 
+import com.example.auth.exception.AuthException;
+import com.example.auth.exception.UserNotFoundException;
 import com.example.auth.model.CustomersModel;
 import com.example.auth.repository.CustomersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class AuthService {
 
     public void generateToken(String cnpj) {
         CustomersModel customers = repository.findByCnpj(cnpj)
-                .orElseThrow(() -> new RuntimeException("CNPJ não encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("CNPJ não encontrado"));
 
         String token = String.format("%06d", new Random().nextInt(999999));
         customers.setToken(token);
@@ -33,29 +35,21 @@ public class AuthService {
             emailService.enviarTokenPolvo(customers.getEmail(), token);
         } catch (Exception e) {
             System.err.println("ERRO REAL AO ENVIAR E-MAIL: " + e.getMessage());
-            e.printStackTrace(); // Isso vai cuspir o erro detalhado no seu console
+            e.printStackTrace();
             throw new RuntimeException("Falha no e-mail: " + e.getMessage());
         }
     }
 
-    private void sendEmail(String to, String token) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Seu Token de Acesso");
-        message.setText("Seu código é: " + token);
-        mailSender.send(message);
-    }
-
     public String verifyToken(String cnpj, String token) {
         CustomersModel customer = repository.findByCnpj(cnpj)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("CNPJ não encontrado em nossa base."));
 
         if (customer.getToken() == null || !customer.getToken().equals(token)) {
-            throw new RuntimeException("Token inválido");
+            throw new AuthException("O código digitado está incorreto.");
         }
 
         if (customer.getTokenExpiration().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
+            throw new AuthException("Este código já expirou. Peça um novo.");
         }
 
         customer.setToken(null);
