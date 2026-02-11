@@ -12,11 +12,11 @@ export default function App() {
 
   // Format CNPJ for display: 00.000.000/0000-00
   const formatCNPJ = (val: string) => {
-    return val
-      .replace(/\D/g, '')
-      .replace(/^(\dt{2})(\dt{3})(\dt{3})(\dt{4})(\dt{2}).*/, "$1.$2.$3/$4-$5")
-      .substring(0, 18);
-  };
+  return val
+    .replace(/\D/g, '')
+    .substring(0, 14)
+    .replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+};
 
   const handleTokenChange = (value: string, index: number) => {
     const char = value.replace(/\D/g, '').substring(value.length - 1);
