@@ -2,6 +2,8 @@
 
 <h1 align="center">Auth Application</h1>
 
+![TelaInicial](./assets/TelaInicial.GIF)
+
 ###
 
 <p align="center">Esta é uma aplicação de autenticação completa, desenvolvida para demonstrar fluxos de login e gerenciamento de usuários utilizando containers.</p>
@@ -12,15 +14,16 @@
 
 ###
 
-<p align="left">Antes de começar, você precisará ter instalado em sua máquina:<br><br>- Docker<br>
+<p align="left">Antes de começar, você precisará ter instalado em sua máquina:<br><br>
+- Docker<br>
   
-  ![Docker](./assets/DockerDesk.GIF)
-  https://docs.docker.com/desktop/setup/install/windows-install/
-  
-  <br>- Git<br>
-  
-  ![Git](./assets/Git.GIF)</p>
-  https://git-scm.com/install/windows
+![Docker](./assets/DockerDesk.GIF)
+https://docs.docker.com/desktop/setup/install/windows-install/
+
+<br>- Git<br>
+
+![Git](./assets/Git.GIF)</p>
+https://git-scm.com/install/windows
 
 ###
 
@@ -35,7 +38,7 @@ git clone https://github.com/joaocastro2/Auth.git
 cd CAMINHO_DO_REPOSITORIO
 ```
 <br><br>
-  2. Configurar Variáveis de Ambiente<br><br>O projeto depende de variáveis de ambiente para funcionar.<br>Copie o arquivo de exemplo e cole ma pasta raiz do seu projeto:
+2. Configurar Variáveis de Ambiente<br><br>O projeto depende de variáveis de ambiente para funcionar.<br>Crie um arquivo chamado ".env" na pasta raiz do projeto e cole as variáveis abaixo, substituindo as informações necessárias:
 <br>
 
 ```bash
@@ -55,7 +58,8 @@ VITE_API_URL=http://localhost:8080
 ```
 
 <br>Abra os arquivos .env e preencha com as suas configurações.<br><br><br>2.1. No campo "MAIL_PASSWORD"
-será preciso colocar uma senha de app do gmail para conseguir realizar o envio do token, para conseguir essa senha, será preciso criar uma nova senha de app:<br><br>Defina um nome para sua senha de app, clique em criar e guarde o código, ele será usado para definir sua variável de ambiente
+será preciso colocar uma senha de app do gmail para conseguir realizar o envio do token, para conseguir essa senha, será preciso criar uma nova senha de app:
+<br><br>Defina um nome para sua senha de app, clique em criar e guarde o código, ele será usado para definir sua variável de ambiente
 
 ![SenhaApp](./assets/SenhaDeApp.GIF)
 <br>https://myaccount.google.com/apppasswords
@@ -84,6 +88,9 @@ docker exec -it auth-db psql -U SEU_USUARIO_AQUI -d SEU_BANCO_AQUI -c "UPDATE cu
 
 ###
 
-<p align="left">Após seguir os passos acima, a aplicação estará disponível em: http://localhost:5173<br><br>Login: Utilize o cnpj que estará previamente cadastrado no banco "12345678000199". <br>Após isso chegará um token no e-mail cadastrado.<br><br>Logs: Para visualizar o que está acontecendo em tempo real, use docker-compose logs -f.</p>
+<p align="left">Após seguir os passos acima, a aplicação estará disponível em: http://localhost:5173<br><br>Login: Utilize o cnpj que estará previamente cadastrado no banco "12345678000199". 
+<br>Após isso chegará um token no e-mail cadastrado.<br><br>
+
+Logs: Para visualizar o que está acontecendo em tempo real, use docker-compose logs -f.</p>
 
 ###
